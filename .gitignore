@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Virtual environment
+venv/
+
+# Large/generated artifacts
+checkpoints/
+output/
+
+# Claude Code local settings
+.claude/settings.local.json
+
+# Tensorboard event files over 100MB (GitHub file size limit)
+logs/stage2_maskgit/version_4/events.out.tfevents.1779686014.awear-MS-7E27.2047491.0
+logs/stage2_maskgit/version_6/events.out.tfevents.1779891730.awear-MS-7E27.1391400.0

@@ -1,0 +1,54 @@
+# configs/config.yaml
+
+data:
+  data_root:     "/home/awear/Downloads/real_world_data_wideangle"
+  metadata_path: "/home/awear/wide2normal/data/metadata.csv"
+  image_size:    256           # 학습 해상도 (wide 및 normal 공통)
+  vq_stride:     16            # VQGAN 다운샘플 비율 → 256/16 = 16×16 = 256 토큰 (ViT patch_size=16과 무관)
+  perspective_fov: 90.0        # GT normal 이미지 추출 FOV (도)
+  num_workers:   4
+  # metadata.csv 컬럼명
+  area_col:   "exclusive_area_m2"
+  supply_col: "supply_area_m2"
+  floor_col:  "floor"
+
+vqgan:
+  codebook_size: 8192        # K: 코드북 크기
+  codebook_dim:  256         # 각 코드 벡터 차원
+  encoder_channels: [64, 128, 256, 512, 512]   # 4회 stride-2 → 16x 다운샘플 → 16×16=256 토큰
+  decoder_channels: [512, 512, 256, 128, 64]
+  # Loss 가중치
+  lambda_perceptual: 1.0
+  lambda_commit:     0.25    # VQ commitment loss
+  lambda_gan:        0.5
+  disc_start_step:   10000   # GAN loss 시작 스텝
+
+transformer:
+  d_model:    512            # Transformer hidden dim
+  n_heads:    8
+  n_layers:   12
+  dropout:    0.1
+  # 조건 토큰
+  distortion_dim:   5        # [fov_norm, k1, k2, cx, cy]
+  num_cond_tokens:  1        # 왜곡 토큰 1개 (면적 토큰 제거 — VGGT 측에서 처리)
+  # MaskGIT
+  mask_token_id:    8192     # codebook_size 인덱스를 [MASK] 토큰으로 사용
+
+training:
+  # Stage 1 (VQGAN codebook)
+  stage1_epochs:     30
+  stage1_lr:         0.0000045
+  stage1_batch_size: 8
+  # Stage 2 (MaskGIT Transformer)
+  stage2_epochs:     200
+  stage2_lr:         0.0001
+  stage2_batch_size: 8
+  # 공통
+  grad_clip:         1.0
+  log_every_n_steps: 50
+  val_check_interval: 1.0
+
+inference:
+  num_steps:   12     # iterative decoding 스텝 수
+  temperature: 1.0
+  top_k:       2048

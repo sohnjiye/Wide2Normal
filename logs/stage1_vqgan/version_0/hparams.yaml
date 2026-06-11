@@ -1,0 +1,54 @@
+cfg:
+  data:
+    area_col: exclusive_area_m2
+    data_root: /home/awear/Downloads/real_world_data_wideangle
+    floor_col: floor
+    image_size: 256
+    metadata_path: /home/awear/wide2normal/data/metadata.csv
+    num_workers: 4
+    patch_size: 16
+    perspective_fov: 90.0
+    supply_col: supply_area_m2
+  inference:
+    num_steps: 12
+    temperature: 1.0
+    top_k: 2048
+  training:
+    grad_clip: 1.0
+    log_every_n_steps: 50
+    stage1_batch_size: 8
+    stage1_epochs: 100
+    stage1_lr: 4.5e-06
+    stage2_batch_size: 8
+    stage2_epochs: 200
+    stage2_lr: 1e-4
+    val_check_interval: 1.0
+  transformer:
+    area_dim: 3
+    d_model: 512
+    distortion_dim: 5
+    dropout: 0.1
+    lambda_geometric: 0.1
+    mask_token_id: 8192
+    n_heads: 8
+    n_layers: 12
+    num_cond_tokens: 2
+  vqgan:
+    codebook_dim: 256
+    codebook_size: 8192
+    decoder_channels:
+    - 512
+    - 512
+    - 256
+    - 128
+    - 64
+    disc_start_step: 10000
+    encoder_channels:
+    - 64
+    - 128
+    - 256
+    - 512
+    - 512
+    lambda_commit: 0.25
+    lambda_gan: 0.5
+    lambda_perceptual: 1.0
